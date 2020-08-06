@@ -67,4 +67,30 @@ class User
     SQL
     data.first['karma']
   end
+
+  def save
+    @id ? update : create
+  end
+
+  private
+
+  def update
+    QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
+      UPDATE users
+      SET
+        fname = ?,
+        lname = ?
+      WHERE id = ?;
+    SQL
+  end
+
+  def create
+    QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
+      INSERT INTO
+        users(fname, lname)
+      VALUES
+        (?, ?);
+    SQL
+    @id = QuestionsDatabase.instance.last_insert_row_id
+  end
 end

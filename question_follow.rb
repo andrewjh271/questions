@@ -40,6 +40,6 @@ class QuestionFollow
       GROUP BY questions.id
       ORDER BY COUNT(*) DESC;
     SQL
-    data[n - 1]
+    Question.new(data[n - 1])
   end
 end

@@ -90,10 +90,14 @@ VALUES
   (4, NULL, 5, 'Yesterday is sometimes there.');
 
 INSERT INTO
-  question_likes
+  question_likes (question_id, user_id)
 VALUES
   (3, 1),
   (3, 3),
   (3, 6),
   (2, 5),
-  (2, 6);
+  (2, 6),
+  (5, 1),
+  (3, 4),
+  (4, 4),
+  (4, 6);
