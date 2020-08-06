@@ -1,16 +1,18 @@
+require_relative 'table_object'
 require_relative 'user'
+require_relative 'question'
 
-class Reply
+class Reply < TableObject
   attr_accessor :question_id, :parent_reply, :user_id, :body
 
-  def self.find_by_id(id)
-    data = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT *
-      FROM replies
-      WHERE id = ?;
-    SQL
-    Reply.new(data.first)
-  end
+  # def self.find_by_id(id)
+  #   data = QuestionsDatabase.instance.execute(<<-SQL, id)
+  #     SELECT *
+  #     FROM replies
+  #     WHERE id = ?;
+  #   SQL
+  #   Reply.new(data.first)
+  # end
 
   def self.find_by_user_id(user_id)
     data = QuestionsDatabase.instance.execute(<<-SQL, user_id)
