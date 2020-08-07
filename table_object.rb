@@ -13,8 +13,32 @@ class TableObject
     new(data.first)
   end
 
+  def self.where(options)
+    query = <<-SQL.squish
+      SELECT *
+      FROM #{to_s.tableize}
+      WHERE #{where_clause(options)};
+    SQL
+    binding.pry
+
+    data = QuestionsDatabase.instance.execute(query, options.values)
+
+    data.map { |datum| new(datum) }
+  end
+
+  def self.find_by(options)
+    # alias
+    where(options)
+  end
+
   def save
     @id ? update : create
+  end
+
+  def self.where_clause(options)
+    options.each_with_object([]) do |(column, _value), clause|
+      clause << "#{column} = ?"
+    end.join(' AND ')
   end
 
   private
@@ -27,7 +51,6 @@ class TableObject
       SET #{set_clause}
       WHERE id = ?;
     SQL
-    binding.pry
     # rotate data set to make @id last
     QuestionsDatabase.instance.execute(query, instance_variables_get.rotate)
   end
@@ -40,7 +63,6 @@ class TableObject
       VALUES
         (#{placeholder_clause(values.length)});
     SQL
-    binding.pry
     QuestionsDatabase.instance.execute(query, values)
     @id = QuestionsDatabase.instance.last_insert_row_id
   end
