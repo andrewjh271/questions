@@ -14,6 +14,8 @@ class TableObject
   end
 
   def self.where(options)
+    # Uses LIKE instead of = for added functionality while
+    # still sanitizing input
     query = <<-SQL.squish
       SELECT *
       FROM #{to_s.tableize}
@@ -37,7 +39,7 @@ class TableObject
 
   def self.where_clause(options)
     options.each_with_object([]) do |(column, _value), clause|
-      clause << "#{column} = ?"
+      clause << "#{column} LIKE ?"
     end.join(' AND ')
   end
 
