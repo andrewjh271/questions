@@ -66,32 +66,4 @@ class Reply < TableObject
     SQL
     data.map { |datum| Reply.new(datum) }
   end
-
-  def save
-    @id ? update : create
-  end
-
-  private
-
-  def update
-    QuestionsDatabase.instance.execute(<<-SQL, @question_id, @parent_reply, @user_id, @body, @id)
-      UPDATE replies
-      SET
-        question_id = ?,
-        parent_reply = ?,
-        user_id = ?,
-        body = ?
-      WHERE id = ?;
-    SQL
-  end
-
-  def create
-    QuestionsDatabase.instance.execute(<<-SQL, @question_id, @parent_reply, @user_id, @body)
-      INSERT INTO
-        replies(question_id, parent_reply, user_id, body)
-      VALUES
-        (?, ?, ?, ?);
-    SQL
-    @id = QuestionsDatabase.instance.last_insert_row_id
-  end
 end

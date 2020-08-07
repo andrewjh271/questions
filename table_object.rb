@@ -1,8 +1,4 @@
-# require_relative 'question'
-# require_relative 'reply'
 require_relative 'questions_database'
-# require_relative 'question_follow'
-# require_relative 'question_like'
 require 'active_support/inflector'
 require 'facets/string/squish'
 require 'pry'
@@ -73,6 +69,8 @@ class TableObject
   end
 
   def instance_variables_get
-    instance_variables.filter_map { |var| instance_variable_get(var) }
+    values = instance_variables.map { |var| instance_variable_get(var) }
+    values.shift if values.first.nil? && instance_variables.first == :@id
+    values
   end
 end
