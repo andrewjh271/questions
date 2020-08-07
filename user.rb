@@ -7,15 +7,6 @@ require_relative 'question_like'
 class User < TableObject
   attr_accessor :fname, :lname
 
-  # def self.find_by_id(id)
-  #   data = QuestionsDatabase.instance.execute(<<-SQL, id)
-  #     SELECT *
-  #     FROM users
-  #     WHERE id = ?;
-  #   SQL
-  #   User.new(data.first)
-  # end
-
   def self.find_by_name(fname, lname)
     data = QuestionsDatabase.instance.execute(<<-SQL, fname, lname)
       SELECT *
@@ -67,29 +58,48 @@ class User < TableObject
     data.first['karma']
   end
 
-  def save
-    @id ? update : create
-  end
+  # def save
+  #   @id ? update : create
+  # end
 
   private
 
-  def update
-    QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
-      UPDATE users
-      SET
-        fname = ?,
-        lname = ?
-      WHERE id = ?;
-    SQL
-  end
+  # def update
+  #   # data = {
+  #   #   fname: "'#{@fname}'",
+  #   #   lname: "'#{@lname}'",
+  #   #   id: @id
+  #   # }
+  #   data = [
+  #     @fname,
+  #     @lname,
+  #     @id
+  #   ]
 
-  def create
-    QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
-      INSERT INTO
-        users(fname, lname)
-      VALUES
-        (?, ?);
-    SQL
-    @id = QuestionsDatabase.instance.last_insert_row_id
-  end
+  #   query = <<-SQL
+  #     UPDATE users
+  #     SET
+  #       fname = ?,
+  #       lname = ?
+  #     WHERE id = ?;
+  #   SQL
+
+  #   QuestionsDatabase.instance.execute(query, data)
+  #   #   UPDATE users
+  #   #   SET
+  #   #     fname = ?,
+  #   #     lname = ?
+  #   #   WHERE id = ?;
+  #   # SQL
+  # end
+
+  # def create
+  #   QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
+  #     INSERT INTO
+  #       users(fname, lname)
+  #     VALUES
+  #       (?, ?);
+  #   SQL
+  #   @id = QuestionsDatabase.instance.last_insert_row_id
+  # end
 end

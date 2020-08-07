@@ -7,15 +7,6 @@ require_relative 'question_like'
 class Question < TableObject
   attr_accessor :title, :body, :user_id
 
-  # def self.find_by_id(id)
-  #   data = QuestionsDatabase.instance.execute(<<-SQL, id)
-  #     SELECT *
-  #     FROM questions
-  #     WHERE id = ?;
-  #   SQL
-  #   Question.new(data.first)
-  # end
-
   def self.find_by_author_id(author_id)
     data = QuestionsDatabase.instance.execute(<<-SQL, author_id)
       SELECT *
