@@ -49,7 +49,7 @@ class Reply < TableObject
     Question.new(data.first)
   end
 
-  def parent_reply
+  def parent_reply_obj
     data = QuestionsDatabase.instance.execute(<<-SQL, @parent_reply).first
       SELECT *
       FROM replies

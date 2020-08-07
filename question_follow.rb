@@ -40,6 +40,6 @@ class QuestionFollow
       GROUP BY questions.id
       ORDER BY COUNT(*) DESC;
     SQL
-    Question.new(data[n - 1])
+    data.first(n).map { |datum| Question.new(datum) }
   end
 end

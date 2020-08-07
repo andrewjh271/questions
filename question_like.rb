@@ -50,6 +50,6 @@ class QuestionLike
       GROUP BY questions.id
       ORDER BY COUNT(*) DESC;
     SQL
-    data.first(n)
+    data.first(n).map { |datum| Question.new(datum) }
   end
 end
