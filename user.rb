@@ -8,14 +8,14 @@ class User < TableObject
   attr_accessor :fname, :lname
 
   def self.find_by_name(fname, lname)
-    data = QuestionsDatabase.instance.execute(<<-SQL, fname, lname)
+    data = QuestionsDatabase.instance.get_first_row(<<-SQL, fname, lname)
       SELECT *
       FROM users
       WHERE
         fname = ?
         AND lname = ?;
     SQL
-    User.new(data.first)
+    User.new(data)
   end
 
   def initialize(data)
@@ -41,7 +41,7 @@ class User < TableObject
   end
 
   def average_karma
-    data = QuestionsDatabase.instance.execute(<<-SQL, @id)
+    QuestionsDatabase.instance.get_first_value(<<-SQL, @id)
       SELECT AVG(likes) AS karma
       FROM (
         SELECT
@@ -55,6 +55,5 @@ class User < TableObject
         GROUP BY questions.title
       );
     SQL
-    data.first['karma']
   end
 end
