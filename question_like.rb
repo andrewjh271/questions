@@ -4,10 +4,7 @@ require_relative 'question'
 class QuestionLike
   def self.likers_for_question_id(question_id)
     data = QuestionsDatabase.instance.execute(<<-SQL, question_id)
-      SELECT
-        users.id,
-        users.fname,
-        users.lname
+      SELECT users.*
       FROM users
       INNER JOIN question_likes ON users.id = question_likes.user_id
       WHERE question_likes.question_id = ?;
@@ -26,11 +23,7 @@ class QuestionLike
 
   def self.liked_questions_for_user_id(user_id)
     data = QuestionsDatabase.instance.execute(<<-SQL, user_id)
-      SELECT
-        questions.id,
-        questions.title,
-        questions.body,
-        questions.user_id
+      SELECT questions.*
       FROM questions
       INNER JOIN question_likes ON questions.id = question_likes.question_id
       WHERE question_likes.user_id = ?;
@@ -40,11 +33,7 @@ class QuestionLike
 
   def self.most_liked_questions(n)
     data = QuestionsDatabase.instance.execute(<<-SQL, n)
-      SELECT
-        questions.id,
-        questions.title,
-        questions.body,
-        questions.user_id
+      SELECT questions.*
       FROM questions
       INNER JOIN question_likes ON questions.id = question_likes.question_id
       GROUP BY questions.id
