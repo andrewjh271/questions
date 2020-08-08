@@ -29,7 +29,7 @@ class QuestionFollow
   end
 
   def self.most_followed_questions(n = 1)
-    data = QuestionsDatabase.instance.execute(<<-SQL)
+    data = QuestionsDatabase.instance.execute(<<-SQL, n)
       SELECT
         questions.id,
         questions.title,
@@ -38,8 +38,9 @@ class QuestionFollow
       FROM questions
       INNER JOIN question_follows ON questions.id = question_follows.question_id
       GROUP BY questions.id
-      ORDER BY COUNT(*) DESC;
+      ORDER BY COUNT(*) DESC
+      LIMIT ?;
     SQL
-    data.first(n).map { |datum| Question.new(datum) }
+    data.map { |datum| Question.new(datum) }
   end
 end
