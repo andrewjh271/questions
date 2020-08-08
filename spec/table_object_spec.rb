@@ -5,8 +5,6 @@ require './reply.rb'
 require './questions_database.rb'
 
 describe TableObject do
-  # after(:all) { File.delete(File.join(Dir.pwd, '/saved/test.yaml')) }
-
   describe '.find_by_id' do
     it 'returns object of self type with given id' do
       expect(User.find_by_id(2).fname).to eq('Beth')

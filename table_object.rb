@@ -21,10 +21,7 @@ class TableObject
       FROM #{to_s.tableize}
       WHERE #{where_clause(options)};
     SQL
-    binding.pry
-
     data = QuestionsDatabase.instance.execute(query, options.values)
-
     data.map { |datum| new(datum) }
   end
 

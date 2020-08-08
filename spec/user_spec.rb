@@ -37,7 +37,7 @@ describe User do
     subject { User.find_by_id(2) }
 
     it 'returns Question object(s) for all followed questions' do
-      expect(subject.followed_questions.map { |q| q.title }).to contain_exactly(
+      expect(subject.followed_questions.map(&:title)).to contain_exactly(
         'Snowden', 'Giraffes'
       )
     end
@@ -47,7 +47,7 @@ describe User do
     subject { User.find_by_id(6) }
 
     it 'returns Question object(s) for all liked questions' do
-      expect(subject.liked_questions.map { |q| q.title }).to contain_exactly(
+      expect(subject.liked_questions.map(&:title)).to contain_exactly(
         'Breakfast', 'Giraffes', 'Yesterday'
       )
     end
