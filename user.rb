@@ -44,15 +44,12 @@ class User < TableObject
     QuestionsDatabase.instance.get_first_value(<<-SQL, @id)
       SELECT AVG(likes) AS karma
       FROM (
-        SELECT
-          users.lname,
-          questions.title,
-          COUNT(question_likes.question_id) AS likes
+        SELECT COUNT(question_likes.question_id) AS likes
         FROM users
         LEFT JOIN questions ON users.id = questions.user_id
         LEFT JOIN question_likes ON questions.id = question_likes.question_id
         WHERE users.id = ?
-        GROUP BY questions.title
+        GROUP BY questions.id
       );
     SQL
   end
