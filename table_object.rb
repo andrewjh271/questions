@@ -34,6 +34,13 @@ class TableObject
     @id ? update : create
   end
 
+  def destroy
+    QuestionsDatabase.instance.execute(<<-SQL, @id)
+      DELETE FROM #{self.class.to_s.tableize}
+      WHERE id = ?;
+    SQL
+  end
+
   def self.where_clause(options)
     options.each_with_object([]) do |(column, _value), clause|
       clause << "#{column} LIKE ?"
