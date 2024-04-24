@@ -4,6 +4,14 @@ require 'facets/string/squish'
 require 'pry'
 
 class TableObject
+  def self.all
+    data = QuestionsDatabase.instance.execute(<<-SQL)
+      SELECT *
+      FROM #{to_s.tableize}
+    SQL
+    data.map { |datum| new(datum) }
+  end
+
   def self.find_by_id(id)
     data = QuestionsDatabase.instance.execute(<<-SQL, id)
       SELECT *
