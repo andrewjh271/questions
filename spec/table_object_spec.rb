@@ -7,15 +7,21 @@ require './questions_database.rb'
 describe TableObject do
   describe '.find_by_id' do
     it 'returns object of self type with given id' do
-      expect(User.find_by_id(2).fname).to eq('Beth')
+      user = User.find_by_id(2)
+      expect(user).to be_a(User)
+      expect(user.fname).to eq('Beth')
     end
 
     it 'works for Question class' do
-      expect(Question.find_by_id(2).title).to eq('Breakfast')
+      question = Question.find_by_id(2)
+      expect(question).to be_a(Question)
+      expect(question.title).to eq('Breakfast')
     end
 
     it 'works for Reply class' do
-      expect(Reply.find_by_id(2).body).to eq('Sorry, I meant Application Programming Interface')
+      reply = Reply.find_by_id(2)
+      expect(reply).to be_a(Reply)
+      expect(reply.body).to eq('Sorry, I meant Application Programming Interface')
     end
   end
 
@@ -30,7 +36,7 @@ describe TableObject do
       )
     end
 
-    it 'works with wildcard character %' do
+    it 'works with wildcard character _' do
       expect(User.where(fname: '____').map(&:fname)).to contain_exactly(
         'Beth', 'Andy'
       )
@@ -105,6 +111,67 @@ describe TableObject do
       reply.save
       expect(Reply.where(question_id: 3, parent_reply: 4, user_id: 1).first.body).to eq(
         'Unrelated, but zebras are cool.')
+    end
+  end
+
+  describe 'destroy' do
+    before(:each) do
+      @test = QuestionsDatabase.instance
+      @test.transaction
+    end
+
+    after(:each) { @test.rollback }
+
+    it 'can\'t delete rows with foreign key dependencies' do
+      user = User.new('fname' => 'Kenneth', 'lname' => 'Liao')
+      user.save
+      question = Question.new(
+        'title' => 'Tonight',
+        'body' => 'Will tonight be like any other night?',
+        'user_id' => 7
+      )
+      question.save
+      reply = Reply.new(
+        'question_id' => 6,
+        'user_id' => 7,
+        'body' => 'Unrelated, but zebras are cool.'
+      )
+      reply.save
+
+      expect { user.destroy }.to raise_error(SQLite3::ConstraintException)
+      expect { question.destroy }.to raise_error(SQLite3::ConstraintException)
+    end
+
+    it 'deletes users' do
+      user = User.new('fname' => 'Kenneth', 'lname' => 'Liao')
+      user.save
+      expect(User.find_by_id(7)).to be_a(User)
+      user.destroy
+      expect(User.where(fname: 'Kenneth')).to eq([])
+    end
+
+    it 'deletes questions' do
+      question = Question.new(
+        'title' => 'Tonight',
+        'body' => 'Will tonight be like any other night?',
+        'user_id' => 4
+      )
+      question.save
+      expect(Question.find_by_id(6)).to be_a(Question)
+      question.destroy
+      expect(Question.find_by_id(6)).to be_nil
+    end
+
+    it 'deletes replies' do
+      reply = Reply.new(
+        'question_id' => 3,
+        'user_id' => 4,
+        'body' => 'Unrelated, but zebras are cool.'
+      )
+      reply.save
+      expect(Reply.where(body: 'Unr%zebras%').first).to be_a(Reply)
+      reply.destroy
+      expect(Reply.where(body: 'Unr%zebras%').first).to be_nil
     end
   end
 end

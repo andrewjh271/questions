@@ -33,6 +33,10 @@ describe Question do
 
   describe '#replies' do
     it 'returns Reply object(s) for all replies' do
+      expect(Question.find_by_id(3).replies.first).to be_a(Reply)
+    end
+
+    it 'returns Reply object(s) with correct methods' do
       expect(Question.find_by_id(3).replies.map(&:body)).to contain_exactly(
         'Giraffes will always be tall',
         "Thanks for your input, but that doesn't really answer my question."
@@ -42,6 +46,11 @@ describe Question do
 
   describe '#followers' do
     it 'returns User object(s) for all followers' do
+      expect(Question.find_by_id(5).followers.first).to be_a(User)
+    end
+
+
+    it 'returns User object(s) with correct methods' do
       expect(Question.find_by_id(5).followers.map(&:fname)).to contain_exactly(
         'Andrew', 'Beth', 'Nicole'
       )
@@ -49,7 +58,11 @@ describe Question do
   end
 
   describe '#likers' do
-    it 'returns User object(s) for all likers' do
+    it 'returns User object(s) for all followers' do
+      expect(Question.find_by_id(3).likers.first).to be_a(User)
+    end
+
+    it 'returns User object(s) with correct methods' do
       expect(Question.find_by_id(3).likers.map(&:fname)).to contain_exactly(
         'Andrew', 'Tommy', 'Nicole', 'Diana'
       )
