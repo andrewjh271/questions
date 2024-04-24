@@ -18,7 +18,7 @@ class TableObject
       FROM #{to_s.tableize}
       WHERE id = ?;
     SQL
-    new(data.first)
+    new(data.first) unless data.empty?
   end
 
   def self.where(options)
