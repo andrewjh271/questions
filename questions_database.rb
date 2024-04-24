@@ -6,6 +6,7 @@ class QuestionsDatabase < SQLite3::Database
 
   def initialize
     super('questions.db')
+    self.execute("PRAGMA foreign_keys = ON") # enforces foreign key restraint
     self.type_translation = true
     self.results_as_hash = true
   end
